@@ -1,3 +1,4 @@
+
 import Card from "./Card.jsx";
 import { useState, useEffect } from "react";
 
@@ -8,6 +9,11 @@ function App() {
   const [randomCard, setRandomCard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // Formulário
+  const [name, setName] = useState("");
+  const [type, setType] = useState("Criatura");
+  const [attack, setAttack] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -51,6 +57,22 @@ function App() {
       .catch((err) => setError(err.message));
   }
 
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const card = {
+      name: name,
+      type: type,
+      attack: Number(attack)
+    };
+
+    setCards([...cards, card]);
+
+    setName("");
+    setType("Criatura");
+    setAttack("");
+  }
+
   return (
     <main>
       <p>
@@ -64,6 +86,37 @@ function App() {
 
       {!loading && !error && (
         <>
+          <h2>Adicionar carta</h2>
+
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              placeholder="Nome da carta"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+            >
+              <option value="Criatura">Criatura</option>
+              <option value="Feitiço">Feitiço</option>
+              <option value="Toze">Toze</option>
+            </select>
+
+            <input
+              type="number"
+              placeholder="Ataque"
+              value={attack}
+              onChange={(e) => setAttack(e.target.value)}
+              required
+            />
+
+            <button type="submit">Adicionar carta</button>
+          </form>
+
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -100,9 +153,9 @@ function App() {
           )}
 
           <ul>
-            {visible.map((card) => (
+            {visible.map((card, index) => (
               <Card
-                key={card.name}
+                key={card.name + index}
                 name={card.name}
                 attack={card.attack}
                 type={card.type}
