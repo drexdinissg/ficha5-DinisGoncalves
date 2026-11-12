@@ -10,10 +10,10 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Formulário
   const [name, setName] = useState("");
   const [type, setType] = useState("Criatura");
   const [attack, setAttack] = useState("");
+  const [formError, setFormError] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -57,8 +57,9 @@ function App() {
       .catch((err) => setError(err.message));
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    setFormError("");
 
     const card = {
       name: name,
@@ -66,11 +67,29 @@ function App() {
       attack: Number(attack)
     };
 
-    setCards([...cards, card]);
+    try {
+      const res = await fetch("http://localhost:3000/api/cartas", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(card)
+      });
 
-    setName("");
-    setType("Criatura");
-    setAttack("");
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      const newCard = await res.json();
+
+      setCards((prevCards) => [...prevCards, newCard]);
+
+      setName("");
+      setType("Criatura");
+      setAttack("");
+    } catch (err) {
+      setFormError(err.message);
+    }
   }
 
   return (
@@ -116,6 +135,8 @@ function App() {
 
             <button type="submit">Adicionar carta</button>
           </form>
+
+          {formError && <p>Erro: {formError}</p>}
 
           <input
             value={search}
