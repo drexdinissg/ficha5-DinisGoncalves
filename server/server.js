@@ -86,8 +86,15 @@ app.get("/api/cartas/aleatoria", (req, res) => {
   res.json(cards[index]);
 });
 
+
 app.post("/api/cartas", (req, res) => {
   const card = req.body;
+
+  if (!card.name || !card.type) {
+    return res.status(400).json({
+      error: "Nome e tipo são obrigatórios."
+    });
+  }
 
   cards.push(card);
 
