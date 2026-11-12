@@ -1,4 +1,6 @@
+
 const express = require("express");
+const cors = require("cors");
 
 const app = express();
 const PORT = 3000;
@@ -11,9 +13,8 @@ const cards = [
   { name: "Eco do Vazio", type: "Feitiço", attack: 0, defense: 0 },
 ];
 
-const cors = require("cors");
-
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5173" }));
+app.use(express.json());
 
 function page(title, body) {
   return `<!DOCTYPE html>
@@ -67,7 +68,6 @@ app.get("/cartas/aleatoria", (req, res) => {
   ));
 });
 
-
 app.get("/api/cartas", (req, res) => {
   const tipo = req.query.tipo;
 
@@ -88,6 +88,13 @@ app.get("/api/cartas/aleatoria", (req, res) => {
   res.json(cards[index]);
 });
 
+app.post("/api/cartas", (req, res) => {
+  const card = req.body;
+
+  cards.push(card);
+
+  res.status(201).json(card);
+});
 
 app.get("/agora", (req, res) => {
   const now = new Date().toLocaleString("pt-PT", {
