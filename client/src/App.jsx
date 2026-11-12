@@ -170,17 +170,16 @@ function App() {
           {randomCard && (
             <div>
               <h2>Carta à sorte</h2>
-              <Card {...randomCard} />
+              <Card {...randomCard} onDelete={handleDelete} />
             </div>
           )}
 
           <ul>
-            {visible.map((card, index) => (
+            {visible.map((card) => (
               <Card
-                key={card.name + index}
-                name={card.name}
-                attack={card.attack}
-                type={card.type}
+                key={card.id}
+                {...card}
+                onDelete={handleDelete}
               />
             ))}
           </ul>
