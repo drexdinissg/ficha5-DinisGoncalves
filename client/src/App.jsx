@@ -9,11 +9,11 @@ function App() {
   const [randomCard, setRandomCard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
   const [name, setName] = useState("");
   const [type, setType] = useState("Criatura");
   const [attack, setAttack] = useState("");
   const [formError, setFormError] = useState("");
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -61,6 +61,7 @@ function App() {
   async function handleSubmit(e) {
     e.preventDefault();
     setFormError("");
+    setSending(true);
 
     const card = {
       name: name,
@@ -90,6 +91,8 @@ function App() {
       setAttack("");
     } catch (err) {
       setFormError(err.message);
+    } finally {
+      setSending(false);
     }
   }
 
@@ -134,7 +137,9 @@ function App() {
               required
             />
 
-            <button type="submit">Adicionar carta</button>
+            <button type="submit" disabled={sending}>
+              {sending ? "A enviar…" : "Adicionar carta"}
+            </button>
           </form>
 
           {formError && <p>Erro: {formError}</p>}
